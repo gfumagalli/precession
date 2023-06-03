@@ -26,7 +26,7 @@ from __version__ import __title__, __version__, __author__
 
 project = __title__
 author = __author__
-copyright = 'Copyright (c) 2020 '+author
+copyright = 'Copyright (c) '+author
 
 # The short X.Y version
 version = __version__
@@ -47,10 +47,15 @@ extensions = [
     # 'sphinx.ext.todo',
     # 'sphinx.ext.coverage',
     # 'sphinx.ext.mathjax',
-    # 'sphinx.ext.viewcode',
+    'sphinx.ext.viewcode',
     #'sphinx.ext.githubpages',
-    'recommonmark'
-]
+    #'recommonmark',
+    "sphinx_mdinclude",
+    'sphinx.ext.napoleon',
+    'nbsphinx','nb2plots']
+
+
+napoleon_custom_sections = ("Call","params_style")
 
 autosummary_generate = True
 
@@ -89,7 +94,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -107,6 +112,8 @@ pygments_style = None
 #
 import sphinx_rtd_theme
 html_theme = 'sphinx_rtd_theme'
+#import sphinx_book_theme
+#html_theme = 'sphinx_book_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -121,7 +128,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -207,6 +214,10 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ['search.html']
+
+html_show_sourcelink = False
+
+
 
 
 # -- Extension configuration -------------------------------------------------
