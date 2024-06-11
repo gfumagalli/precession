@@ -1365,7 +1365,7 @@ def eval_J(theta1=None, theta2=None, deltaphi=None, kappa=None, r=None, q=None, 
         S1 = eval_S1(q, chi1)
         S2 = eval_S2(q, chi2)
         L = eval_L(r, q)
-        S = eval_S(theta1, theta2, deltaphi, q, chi1, chi2)
+        S = eval_S(theta1=theta1, theta2=theta2, deltaphi=deltaphi, q=q, chi1=chi1, chi2=chi2)
         J = (L**2+S**2+2*L*(S1*np.cos(theta1)+S2*np.cos(theta2)))**0.5
 
     elif theta1 is None and theta2 is None and deltaphi is None and kappa is not None and r is not None and q is not None and chi1 is None and chi2 is None:
@@ -1458,8 +1458,8 @@ def eval_S(theta1=None, theta2=None, deltaphi=None, deltachi=None, kappa=None, r
     
     Examples
     --------
-    ``S = precession.eval_S(theta1,theta2,deltaphi,q,chi1,chi2)``
-    ``S = precession.eval_S(deltachi,kappa,r,chieff,q)``
+    ``S = precession.eval_S(theta1=theta1,theta2=theta2,deltaphi=deltaphi,q=q,chi1=chi1,chi2=chi2)``
+    ``S = precession.eval_S(deltachi=deltachi,kappa=kappa,r=r,chieff=chieff,q=q)``
     """
 
     if theta1 is not None and theta2 is not None and deltaphi is not None and deltachi is None and kappa is None and r is None and chieff is None and q is not None and chi1 is not None and chi2 is not None:
@@ -5286,7 +5286,7 @@ def integrator_orbav(Lhinitial, S1hinitial, S2hinitial, v, q, chi1, chi2, PNorde
         #ODEsolution = scipy.integrate.solve_ivp(rhs_orbav, (vinitial, vfinal), ic, t_eval=(vinitial, vfinal), dense_output=True, args=(q, m1, m2, eta, chi1, chi2, S1, S2, quadrupole_formula))
 
         # Make sure the first step is large enough. This is to avoid LSODA to propose a tiny step which causes the integration to stall
-        if 'h0' not in odeint_kwargs: odeint_kwargs['h0']=v[0]/1e6
+        if 'h0' not in odeint_kwargs: odeint_kwargs['h0']=  np.sign(v[-1]-v[0]) *  v[0]/1e6
 
         ODEsolution = scipy.integrate.odeint(rhs_orbav, ic, v, args=(q, m1, m2, eta, chi1, chi2, S1, S2, PNorderpre, PNorderrad), **odeint_kwargs)#, printmessg=0,rtol=1e-10,atol=1e-10)#,tcrit=sing)
         return ODEsolution
@@ -6080,7 +6080,7 @@ def remnantkick(theta1, theta2, deltaphi, q, chi1, chi2, kms=False, maxphase=Fal
     vk = norm_nested(kick)
 
     if full_output:
-        return np.stack([vk, kick])
+        return np.concatenate([vk[:, None], kick], axis=-1)
     else:
         return vk
 
@@ -6091,3 +6091,6 @@ def remnantkick(theta1, theta2, deltaphi, q, chi1, chi2, kms=False, maxphase=Fal
 
 if __name__ == '__main__':
     pass
+
+
+    print ( remnantkick([1.,1.], [1.,1.], [1.,1.], [1.,1.], [1.,1.], [1.,1.], maxphase = True, full_output=True) )
