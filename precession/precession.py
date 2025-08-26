@@ -3615,7 +3615,7 @@ def deltachisampling(kappa, r, chieff, q, chi1, chi2, N=1, precomputedroots=None
     deltachiminus,deltachiplus,deltachi3 = deltachiroots(kappa, u, chieff, q, chi1, chi2, precomputedroots=precomputedroots)
 
     tau = eval_tau(kappa, r, chieff, q, chi1, chi2, precomputedroots=np.stack([deltachiminus,deltachiplus,deltachi3]))
-
+    print('d',tau)
     # For each binary, generate N samples between 0 and tau.
     # For r=infinity use a simple placeholder
     t = np.random.uniform(np.zeros(len(tau)),np.where(u!=0, tau, 0),size=(N,len(tau)))
@@ -3624,7 +3624,7 @@ def deltachisampling(kappa, r, chieff, q, chi1, chi2, N=1, precomputedroots=None
     # np.squeeze is necessary to return shape (M,) instead of (M,1) if N=1
     # np.atleast_1d is necessary to return shape (1,) instead of (,) if M=N=1
     t= np.atleast_1d(np.squeeze(t))
-
+    print(t)
     # Note the special broadcasting rules of deltachioft, see deltachioft.__docs__
     # deltachi has shape (M, N).
     deltachi = deltachioft(t, kappa , r, chieff, q, chi1, chi2, precomputedroots=np.stack([deltachiminus,deltachiplus,deltachi3]))
@@ -3633,7 +3633,7 @@ def deltachisampling(kappa, r, chieff, q, chi1, chi2, N=1, precomputedroots=None
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=RuntimeWarning)
         deltachiinf = np.squeeze(np.tile( eval_deltachiinf(kappa, chieff, q, chi1, chi2), (N,1) ))
-
+    
     deltachi=np.where(u!=0, deltachi,deltachiinf)
 
     return np.squeeze(deltachi.T)
